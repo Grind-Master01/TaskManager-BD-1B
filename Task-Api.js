@@ -7,7 +7,6 @@ const app = express();
 app.use(express.json()); // Parse JSON bodies
 const PORT = process.env.PORT ||3000;
 
-
 let team = [
   { id : crypto.randomBytes(8).toString('hex'), title: "Add Rate Limiting to Public Endpoints",                status: "in_progress",          category: "security",          description: "Integrate express-rate-limit middleware to cap requests at 100 per 15 minutes per IP to prevent brute-force attacks."},
   { id : crypto.randomBytes(8).toString('hex'), title: "Implement Refresh Token Endpoint",                     status: "pending",              category: "feature",           description: "Add POST /api/v1/auth/refresh to issue new short-lived JWT access tokens using secure HTTP-only refresh cookies." },
@@ -19,7 +18,7 @@ let team = [
 ];
 
 
-//GET ALL NOTES
+//GET ALL NOTES 
 app.get('/team', (req,res) => {
   res.status(200).json(team);
 });
@@ -47,6 +46,24 @@ try {
   }     
 });
 
+
+// DELETE a team task by id
+app.delete('/team/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const index = team.findIndex(t => t.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ error: `No task found with id: ${id}` });
+    }
+
+    const [removed] = team.splice(index, 1);
+    res.status(200).json({ message: "Task deleted successfully", task: removed });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error!" });
+  }
+});
 
 //Error Handler
 app.use((err, req, res, next) => {
