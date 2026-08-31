@@ -7,7 +7,7 @@
   "name": "bt-group-1b-bd",
   "version": "1.0.0",
   "description": "Task Manager API",
-  "main": "index.js",
+  "main": "Task-Api.js",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,7 +15,7 @@
     "dev": "nodemon Task-Api.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gentle Soldier",
   "license": "ISC",
   "type": "commonjs"
 }

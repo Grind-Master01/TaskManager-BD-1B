@@ -28,16 +28,15 @@ app.get('/team', (req,res) => {
 // POST New - Create with Validation
 app.post('/team', (req, res) => {
 try {
-  const { title, author, description  } = req.body;
+  const { title, status, category, description  } = req.body;
 
   //Validate Input
-  if (!title || !author || !description ) {
-    return res.status(400).json({ error: 'title, author, and description fields are required' });
+  if (!title || !status || !category || !description ) {
+    return res.status(400).json({ error: 'title, status,category, and description fields are required' });
   }
-
    //create new Task
     const newTask = {
-       id: crypto.randomBytes(8).toString('hex'), title, author, description };
+       id: crypto.randomBytes(8).toString('hex'), title, status,category, description };
     team.push(newTask);
 
     res.status(201).json(newTask);
@@ -47,6 +46,23 @@ try {
   }     
 });
 
+// DELETE a team task by id
+app.delete('/team/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const index = team.findIndex(t => t.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ error: `No task found with id: ${id}` });
+    }
+
+    const [removed] = team.splice(index, 1);
+    res.status(200).json({ message: "Task deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error!" });
+  }
+});
 
 //Error Handler
 app.use((err, req, res, next) => {
