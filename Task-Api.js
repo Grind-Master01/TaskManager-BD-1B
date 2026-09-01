@@ -45,18 +45,28 @@ try {
   }     
 });
 
-// DELETE a team task by id
-app.delete('/team/:id', (req, res) => {
+// PUT - Full update/replace of a team task by id
+app.put('/team/:id', (req, res) => {
   try {
     const { id } = req.params;
+    const { title, status, category, description } = req.body;
+
+    // Full replace requires every field, same as POST
+    if (!title || !status || !category || !description) {
+      return res.status(400).json({ error: 'title, status, category, and description fields are required' });
+    }
+
     const index = team.findIndex(t => t.id === id);
 
     if (index === -1) {
       return res.status(404).json({ error: `No task found with id: ${id}` });
     }
 
-    const [removed] = team.splice(index, 1);
-    res.status(200).json({ message: "Task deleted successfully" });
+    // Keep the original id, replace everything else
+    const updatedTask = { id, title, status, category, description };
+    team[index] = updatedTask;
+
+    res.status(200).json(updatedTask);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error!" });
